@@ -428,6 +428,78 @@
             color: var(--text-secondary);
         }
 
+        /* Horizontal Timeline Styles */
+        .timeline.horizontal {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 80px 20px;
+            min-height: 400px;
+        }
+
+        .timeline.horizontal .timeline-line {
+            left: 0;
+            right: 0;
+            top: 50%;
+            bottom: auto;
+            width: 100%;
+            height: 3px;
+            transform: translateY(-50%);
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent-primary));
+        }
+
+        .timeline.horizontal .timeline-item {
+            flex-direction: column;
+            margin-bottom: 0;
+            margin-right: 60px;
+            min-width: 300px;
+            max-width: 350px;
+            align-items: center;
+        }
+
+        .timeline.horizontal .timeline-item.left,
+        .timeline.horizontal .timeline-item.right {
+            flex-direction: column;
+        }
+
+        .timeline.horizontal .timeline-item.left .timeline-content {
+            margin-bottom: 40px;
+            margin-right: 0;
+            text-align: center;
+        }
+
+        .timeline.horizontal .timeline-item.right .timeline-content {
+            margin-top: 40px;
+            margin-left: 0;
+            text-align: center;
+        }
+
+        .timeline.horizontal .timeline-content {
+            width: 100%;
+        }
+
+        .timeline.horizontal .timeline-dot {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .timeline.horizontal .timeline-item:hover .timeline-dot {
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .timeline.horizontal .timeline-item.left {
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .timeline.horizontal .timeline-item.right {
+            align-items: center;
+            justify-content: flex-start;
+        }
+
         @media (max-width: 768px) {
             .creator-section {
                 padding: 25px;
@@ -550,6 +622,21 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Orientation Selector -->
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-secondary); font-size: 0.95rem;">
+                        🔄 Timeline Orientation
+                    </label>
+                    <div class="theme-selector">
+                        <button class="theme-option active" data-orientation="vertical" onclick="changeOrientation('vertical')">
+                            ↕️ Vertical
+                        </button>
+                        <button class="theme-option" data-orientation="horizontal" onclick="changeOrientation('horizontal')">
+                            ↔️ Horizontal
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Timeline Title -->
@@ -649,24 +736,27 @@
         let entries = [];
         let editingIndex = -1;
         let currentTheme = 'dark';
+        let currentOrientation = 'vertical';
 
-        // Load theme from localStorage on page load
+        // Load theme and orientation from localStorage on page load
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('timeline-theme') || 'dark';
+            const savedOrientation = localStorage.getItem('timeline-orientation') || 'vertical';
             changeTheme(savedTheme, false);
+            changeOrientation(savedOrientation, false);
         });
 
         // Theme switching function
         function changeTheme(theme, saveToStorage = true) {
             currentTheme = theme;
-            
+
             // Update data-theme attribute on body
             if (theme === 'dark') {
                 document.body.removeAttribute('data-theme');
             } else {
                 document.body.setAttribute('data-theme', theme);
             }
-            
+
             // Update active button
             document.querySelectorAll('.theme-option').forEach(btn => {
                 btn.classList.remove('active');
@@ -674,10 +764,36 @@
                     btn.classList.add('active');
                 }
             });
-            
+
             // Save to localStorage
             if (saveToStorage) {
                 localStorage.setItem('timeline-theme', theme);
+            }
+        }
+
+        // Orientation switching function
+        function changeOrientation(orientation, saveToStorage = true) {
+            currentOrientation = orientation;
+
+            // Update timeline container class
+            const timelineContainer = document.getElementById('timelineContainer');
+            if (orientation === 'horizontal') {
+                timelineContainer.classList.add('horizontal');
+            } else {
+                timelineContainer.classList.remove('horizontal');
+            }
+
+            // Update active button
+            document.querySelectorAll('[data-orientation]').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-orientation') === orientation) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Save to localStorage
+            if (saveToStorage) {
+                localStorage.setItem('timeline-orientation', orientation);
             }
         }
 
@@ -857,7 +973,8 @@
         function generateCompleteHTML() {
             const title = document.getElementById('timelineTitle').value;
             const titleHTML = document.getElementById('displayTitle').innerHTML;
-            
+            const orientationClass = currentOrientation === 'horizontal' ? ' horizontal' : '';
+
             let entriesHTML = '';
             entries.forEach((entry, index) => {
                 const side = index % 2 === 0 ? 'left' : 'right';
@@ -889,7 +1006,7 @@
             <div class="preview-header">
                 <h2 class="timeline-title-display">${titleHTML}</h2>
             </div>
-            <div class="timeline">
+            <div class="timeline${orientationClass}">
                 <div class="timeline-line"></div>
                 ${entriesHTML}
             </div>
@@ -927,7 +1044,8 @@
             const data = {
                 title: document.getElementById('timelineTitle').value,
                 entries: entries,
-                theme: currentTheme
+                theme: currentTheme,
+                orientation: currentOrientation
             };
             const json = JSON.stringify(data, null, 2);
             
@@ -1108,12 +1226,17 @@
                         document.getElementById('timelineTitle').value = data.title || 'My Timeline';
                         updateTitleDisplay(data.title || 'My Timeline');
                         entries = data.entries || [];
-                        
+
                         // Load theme if saved (JSON only)
                         if (data.theme) {
                             changeTheme(data.theme);
                         }
-                        
+
+                        // Load orientation if saved (JSON only)
+                        if (data.orientation) {
+                            changeOrientation(data.orientation);
+                        }
+
                         renderTimeline();
                         alert('Timeline data loaded successfully!');
                     } catch (err) {
