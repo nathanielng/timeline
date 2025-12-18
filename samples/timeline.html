@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Platform Timeline</title>
+    <style>
+        
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: rgba(30, 30, 50, 0.6);
+            --bg-input: rgba(20, 20, 40, 0.6);
+            --text-primary: #e4e4e7;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --accent-primary: #a78bfa;
+            --accent-secondary: #6366f1;
+            --border-color: rgba(167, 139, 250, 0.2);
+            --border-hover: rgba(167, 139, 250, 0.5);
+            --shadow-color: rgba(167, 139, 250, 0.3);
+            --link-color: #c4b5fd;
+            --link-hover: #a78bfa;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --bg-input: rgba(255, 255, 255, 0.9);
+            --text-primary: #1e293b;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --accent-primary: #7c3aed;
+            --accent-secondary: #6366f1;
+            --border-color: rgba(124, 58, 237, 0.2);
+            --border-hover: rgba(124, 58, 237, 0.5);
+            --shadow-color: rgba(124, 58, 237, 0.2);
+            --link-color: #7c3aed;
+            --link-hover: #6d28d9;
+        }
+
+        [data-theme="blue"] {
+            --bg-primary: #0a1929;
+            --bg-secondary: #001e3c;
+            --bg-card: rgba(13, 27, 42, 0.7);
+            --bg-input: rgba(10, 25, 41, 0.7);
+            --text-primary: #e3f2fd;
+            --text-secondary: #bbdefb;
+            --text-muted: #90caf9;
+            --accent-primary: #42a5f5;
+            --accent-secondary: #1e88e5;
+            --border-color: rgba(66, 165, 245, 0.3);
+            --border-hover: rgba(66, 165, 245, 0.6);
+            --shadow-color: rgba(66, 165, 245, 0.4);
+            --link-color: #64b5f6;
+            --link-hover: #42a5f5;
+        }
+
+        [data-theme="green"] {
+            --bg-primary: #0d1f12;
+            --bg-secondary: #1a3d20;
+            --bg-card: rgba(17, 31, 18, 0.7);
+            --bg-input: rgba(13, 31, 18, 0.7);
+            --text-primary: #e8f5e9;
+            --text-secondary: #c8e6c9;
+            --text-muted: #a5d6a7;
+            --accent-primary: #66bb6a;
+            --accent-secondary: #43a047;
+            --border-color: rgba(102, 187, 106, 0.3);
+            --border-hover: rgba(102, 187, 106, 0.6);
+            --shadow-color: rgba(102, 187, 106, 0.4);
+            --link-color: #81c784;
+            --link-hover: #66bb6a;
+        }
+
+        [data-theme="rose"] {
+            --bg-primary: #1f0d14;
+            --bg-secondary: #3d1a28;
+            --bg-card: rgba(31, 13, 20, 0.7);
+            --bg-input: rgba(31, 13, 20, 0.7);
+            --text-primary: #fce4ec;
+            --text-secondary: #f8bbd0;
+            --text-muted: #f48fb1;
+            --accent-primary: #ec407a;
+            --accent-secondary: #d81b60;
+            --border-color: rgba(236, 64, 122, 0.3);
+            --border-hover: rgba(236, 64, 122, 0.6);
+            --shadow-color: rgba(236, 64, 122, 0.4);
+            --link-color: #f06292;
+            --link-hover: #ec407a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 40px 20px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .creator-section {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            margin-bottom: 60px;
+        }
+
+        .creator-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .creator-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+
+        .creator-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--shadow-color);
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(220, 38, 38, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(220, 38, 38, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .timeline-preview {
+            margin-top: 60px;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .timeline-title-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .timeline-title-display .highlight {
+            color: var(--accent-primary);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-secondary), var(--accent-primary));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 60px;
+            position: relative;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-item {
+            transform: translateY(30px);
+        }
+
+        .timeline-item.left {
+            flex-direction: row;
+        }
+
+        .timeline-item.right {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: calc(50% - 40px);
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border-color: var(--border-hover);
+        }
+
+        .timeline-item.left .timeline-content {
+            text-align: right;
+            margin-right: 40px;
+        }
+
+        .timeline-item.right .timeline-content {
+            text-align: left;
+            margin-left: 40px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            box-shadow: 0 0 0 4px var(--bg-primary), 0 0 20px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            transform: translateX(-50%) scale(1.3);
+            box-shadow: 0 0 0 4px var(--bg-primary), 0 0 30px var(--shadow-color);
+        }
+
+        .date-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .date-badge.red {
+            background: rgba(220, 38, 38, 0.8);
+            color: #fef2f2;
+        }
+
+        .date-badge.purple {
+            background: rgba(139, 92, 246, 0.8);
+            color: #f5f3ff;
+        }
+
+        .date-badge.blue {
+            background: rgba(59, 130, 246, 0.8);
+            color: #eff6ff;
+        }
+
+        .date-badge.green {
+            background: rgba(34, 197, 94, 0.8);
+            color: #f0fdf4;
+        }
+
+        .timeline-entry-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .timeline-entry-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .timeline-entry-description a {
+            color: var(--link-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-entry-description a:hover {
+            color: var(--link-hover);
+            border-bottom-color: var(--link-hover);
+        }
+
+        .entry-actions {
+            position: absolute;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .timeline-item.left .entry-actions {
+            left: 10px;
+        }
+
+        .timeline-item.right .entry-actions {
+            right: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .creator-section {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-title-display {
+                font-size: 2.5rem;
+            }
+
+            .timeline-line {
+                left: 30px;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+                padding-left: 60px;
+            }
+
+            .timeline-content {
+                width: 100%;
+                text-align: left !important;
+                margin: 0 !important;
+            }
+
+            .timeline-dot {
+                left: 30px;
+            }
+
+            .timeline-item:hover .timeline-dot {
+                transform: translateX(-50%) scale(1.3);
+            }
+
+            .timeline-item.left .entry-actions,
+            .timeline-item.right .entry-actions {
+                right: 10px;
+                left: auto;
+            }
+        }
+
+        .export-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .badge-info {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #93c5fd;
+            margin-left: 10px;
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .theme-option {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .theme-option:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            color: white;
+        }
+    
+        .entry-actions { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="timeline-preview">
+            <div class="preview-header">
+                <h2 class="timeline-title-display">AI Agent Platform <span class="highlight">Timeline</span></h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-line"></div>
+                
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <div class="date-badge purple">May 16, 2025</div>
+                    <h2 class="timeline-entry-title">Strands SDK Launched</h2>
+                    <p class="timeline-entry-description">AWS announces <a href="https://aws.amazon.com/blogs/opensource/introducing-strands-agents-an-open-source-ai-agents-sdk/" target="_blank">Strands Agents</a>, an open source SDK for building AI agents with a model-driven approach. The framework enables developers to build agents by defining prompts and tool lists with minimal code, scaling from simple to complex use cases.</p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item right">
+                <div class="timeline-content">
+                    <div class="date-badge blue">July 16, 2025</div>
+                    <h2 class="timeline-entry-title">Amazon Bedrock AgentCore Preview</h2>
+                    <p class="timeline-entry-description">AWS introduces <a href="https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-agentcore-securely-deploy-and-operate-ai-agents-at-any-scale/" target="_blank">AgentCore</a> in preview, a comprehensive set of enterprise-grade services including Runtime, Memory, Observability, and Identity to help developers deploy and operate AI agents at scale using any framework and model.</p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <div class="date-badge red">July 14, 2025</div>
+                    <h2 class="timeline-entry-title">Kiro Public Preview</h2>
+                    <p class="timeline-entry-description">Amazon launches <a href="https://kiro.dev/blog/introducing-kiro/" target="_blank">Kiro</a> in public preview, an agentic IDE that introduces spec-driven development to transform "vibe coding" into production-ready software. Built on VS Code OSS and powered by Anthropic's Claude models, Kiro enforces structured workflows from requirements through deployment.</p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item right">
+                <div class="timeline-content">
+                    <div class="date-badge green">October 13, 2025</div>
+                    <h2 class="timeline-entry-title">Amazon Bedrock AgentCore Generally Available</h2>
+                    <p class="timeline-entry-description">AWS announces <a href="https://aws.amazon.com/about-aws/whats-new/2025/10/amazon-bedrock-agentcore-available/" target="_blank">General Availability of AgentCore</a> with enhanced features including VPC support, AWS PrivateLink, CloudFormation integration, and Agent-to-Agent (A2A) protocol support for production-ready multi-agent orchestration.</p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <div class="date-badge green">November 17, 2025</div>
+                    <h2 class="timeline-entry-title">Kiro Generally Available</h2>
+                    <p class="timeline-entry-description"><a href="https://kiro.dev/blog/general-availability/" target="_blank">Kiro reaches General Availability</a> with full production support, offering developers powerful AI-assisted coding capabilities with enhanced security and performance features across macOS, Windows, and Linux.</p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
