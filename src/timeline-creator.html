@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Creator</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: rgba(30, 30, 50, 0.6);
+            --bg-input: rgba(20, 20, 40, 0.6);
+            --text-primary: #e4e4e7;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --accent-primary: #a78bfa;
+            --accent-secondary: #6366f1;
+            --border-color: rgba(167, 139, 250, 0.2);
+            --border-hover: rgba(167, 139, 250, 0.5);
+            --shadow-color: rgba(167, 139, 250, 0.3);
+            --link-color: #c4b5fd;
+            --link-hover: #a78bfa;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --bg-input: rgba(255, 255, 255, 0.9);
+            --text-primary: #1e293b;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --accent-primary: #7c3aed;
+            --accent-secondary: #6366f1;
+            --border-color: rgba(124, 58, 237, 0.2);
+            --border-hover: rgba(124, 58, 237, 0.5);
+            --shadow-color: rgba(124, 58, 237, 0.2);
+            --link-color: #7c3aed;
+            --link-hover: #6d28d9;
+        }
+
+        [data-theme="blue"] {
+            --bg-primary: #0a1929;
+            --bg-secondary: #001e3c;
+            --bg-card: rgba(13, 27, 42, 0.7);
+            --bg-input: rgba(10, 25, 41, 0.7);
+            --text-primary: #e3f2fd;
+            --text-secondary: #bbdefb;
+            --text-muted: #90caf9;
+            --accent-primary: #42a5f5;
+            --accent-secondary: #1e88e5;
+            --border-color: rgba(66, 165, 245, 0.3);
+            --border-hover: rgba(66, 165, 245, 0.6);
+            --shadow-color: rgba(66, 165, 245, 0.4);
+            --link-color: #64b5f6;
+            --link-hover: #42a5f5;
+        }
+
+        [data-theme="green"] {
+            --bg-primary: #0d1f12;
+            --bg-secondary: #1a3d20;
+            --bg-card: rgba(17, 31, 18, 0.7);
+            --bg-input: rgba(13, 31, 18, 0.7);
+            --text-primary: #e8f5e9;
+            --text-secondary: #c8e6c9;
+            --text-muted: #a5d6a7;
+            --accent-primary: #66bb6a;
+            --accent-secondary: #43a047;
+            --border-color: rgba(102, 187, 106, 0.3);
+            --border-hover: rgba(102, 187, 106, 0.6);
+            --shadow-color: rgba(102, 187, 106, 0.4);
+            --link-color: #81c784;
+            --link-hover: #66bb6a;
+        }
+
+        [data-theme="rose"] {
+            --bg-primary: #1f0d14;
+            --bg-secondary: #3d1a28;
+            --bg-card: rgba(31, 13, 20, 0.7);
+            --bg-input: rgba(31, 13, 20, 0.7);
+            --text-primary: #fce4ec;
+            --text-secondary: #f8bbd0;
+            --text-muted: #f48fb1;
+            --accent-primary: #ec407a;
+            --accent-secondary: #d81b60;
+            --border-color: rgba(236, 64, 122, 0.3);
+            --border-hover: rgba(236, 64, 122, 0.6);
+            --shadow-color: rgba(236, 64, 122, 0.4);
+            --link-color: #f06292;
+            --link-hover: #ec407a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 40px 20px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .creator-section {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            margin-bottom: 60px;
+        }
+
+        .creator-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .creator-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+
+        .creator-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--shadow-color);
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(220, 38, 38, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(220, 38, 38, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .timeline-preview {
+            margin-top: 60px;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .timeline-title-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .timeline-title-display .highlight {
+            color: var(--accent-primary);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-secondary), var(--accent-primary));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 60px;
+            position: relative;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-item {
+            transform: translateY(30px);
+        }
+
+        .timeline-item.left {
+            flex-direction: row;
+        }
+
+        .timeline-item.right {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: calc(50% - 40px);
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border-color: var(--border-hover);
+        }
+
+        .timeline-item.left .timeline-content {
+            text-align: right;
+            margin-right: 40px;
+        }
+
+        .timeline-item.right .timeline-content {
+            text-align: left;
+            margin-left: 40px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            box-shadow: 0 0 0 4px var(--bg-primary), 0 0 20px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            transform: translateX(-50%) scale(1.3);
+            box-shadow: 0 0 0 4px var(--bg-primary), 0 0 30px var(--shadow-color);
+        }
+
+        .date-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .date-badge.red {
+            background: rgba(220, 38, 38, 0.8);
+            color: #fef2f2;
+        }
+
+        .date-badge.purple {
+            background: rgba(139, 92, 246, 0.8);
+            color: #f5f3ff;
+        }
+
+        .date-badge.blue {
+            background: rgba(59, 130, 246, 0.8);
+            color: #eff6ff;
+        }
+
+        .date-badge.green {
+            background: rgba(34, 197, 94, 0.8);
+            color: #f0fdf4;
+        }
+
+        .timeline-entry-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .timeline-entry-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .timeline-entry-description a {
+            color: var(--link-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-entry-description a:hover {
+            color: var(--link-hover);
+            border-bottom-color: var(--link-hover);
+        }
+
+        .entry-actions {
+            position: absolute;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .timeline-item.left .entry-actions {
+            left: 10px;
+        }
+
+        .timeline-item.right .entry-actions {
+            right: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .creator-section {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-title-display {
+                font-size: 2.5rem;
+            }
+
+            .timeline-line {
+                left: 30px;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+                padding-left: 60px;
+            }
+
+            .timeline-content {
+                width: 100%;
+                text-align: left !important;
+                margin: 0 !important;
+            }
+
+            .timeline-dot {
+                left: 30px;
+            }
+
+            .timeline-item:hover .timeline-dot {
+                transform: translateX(-50%) scale(1.3);
+            }
+
+            .timeline-item.left .entry-actions,
+            .timeline-item.right .entry-actions {
+                right: 10px;
+                left: auto;
+            }
+        }
+
+        .export-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .badge-info {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #93c5fd;
+            margin-left: 10px;
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .theme-option {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .theme-option:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Creator Section -->
+        <div class="creator-section">
+            <div class="creator-header">
+                <h1>⏱️ Timeline Creator</h1>
+                <p>Design beautiful timelines for your events, projects, or stories</p>
+                
+                <!-- Theme Selector -->
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text-secondary); font-size: 0.95rem;">
+                        🎨 Choose Theme
+                    </label>
+                    <div class="theme-selector">
+                        <button class="theme-option active" data-theme="dark" onclick="changeTheme('dark')">
+                            🌙 Dark Purple
+                        </button>
+                        <button class="theme-option" data-theme="light" onclick="changeTheme('light')">
+                            ☀️ Light
+                        </button>
+                        <button class="theme-option" data-theme="blue" onclick="changeTheme('blue')">
+                            💙 Ocean Blue
+                        </button>
+                        <button class="theme-option" data-theme="green" onclick="changeTheme('green')">
+                            💚 Forest Green
+                        </button>
+                        <button class="theme-option" data-theme="rose" onclick="changeTheme('rose')">
+                            🌹 Rose
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Title -->
+            <div class="form-group">
+                <label for="timelineTitle">Timeline Title</label>
+                <input type="text" id="timelineTitle" placeholder="e.g., Product Launch, Event Schedule, Project Roadmap" value="My Timeline">
+            </div>
+
+            <!-- Entry Form -->
+            <div style="border-top: 1px solid rgba(167, 139, 250, 0.2); padding-top: 30px; margin-top: 30px;">
+                <h3 style="margin-bottom: 20px; color: #a78bfa;">Add Timeline Entry</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="entryDate">Date</label>
+                        <input type="text" id="entryDate" placeholder="e.g., January 15th, Q2 2024">
+                    </div>
+                    <div class="form-group">
+                        <label for="entryBadgeColor">Badge Color</label>
+                        <select id="entryBadgeColor">
+                            <option value="purple">Purple</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="entryTitle">Title</label>
+                    <input type="text" id="entryTitle" placeholder="e.g., Launch Event, Milestone Reached">
+                </div>
+
+                <div class="form-group">
+                    <label for="entryDescription">Description</label>
+                    <textarea id="entryDescription" placeholder="Brief description of this timeline event..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="addEntry()">
+                        <span>➕</span> Add Entry
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearForm()">
+                        Clear Form
+                    </button>
+                </div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="export-section">
+                <h3 style="margin-bottom: 15px; color: #a78bfa;">Export Options</h3>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="exportHTML()">
+                        <span>📥</span> Download HTML
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportMarkdown()">
+                        <span>📝</span> Download Markdown
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyToClipboard()">
+                        <span>📋</span> Copy HTML
+                    </button>
+                    <button class="btn btn-secondary" onclick="saveData()">
+                        <span>💾</span> Save Data
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadData()">
+                        <span>📂</span> Load Data (JSON/MD)
+                    </button>
+                </div>
+                <p style="margin-top: 15px; color: #9ca3af; font-size: 0.9rem;">
+                    💡 Tip: Save your data to preserve your timeline, or download HTML/Markdown to share it!
+                </p>
+            </div>
+        </div>
+
+        <!-- Timeline Preview -->
+        <div class="timeline-preview">
+            <div class="preview-header">
+                <h2 id="displayTitle" class="timeline-title-display">
+                    My <span class="highlight">Timeline</span>
+                </h2>
+            </div>
+
+            <div id="timelineContainer" class="timeline">
+                <div class="timeline-line"></div>
+                <div class="empty-state">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3>No entries yet</h3>
+                    <p>Add your first timeline entry above to get started!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let entries = [];
+        let editingIndex = -1;
+        let currentTheme = 'dark';
+
+        // Load theme from localStorage on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('timeline-theme') || 'dark';
+            changeTheme(savedTheme, false);
+        });
+
+        // Theme switching function
+        function changeTheme(theme, saveToStorage = true) {
+            currentTheme = theme;
+            
+            // Update data-theme attribute on body
+            if (theme === 'dark') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', theme);
+            }
+            
+            // Update active button
+            document.querySelectorAll('.theme-option').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-theme') === theme) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Save to localStorage
+            if (saveToStorage) {
+                localStorage.setItem('timeline-theme', theme);
+            }
+        }
+
+        // Update title display in real-time
+        document.getElementById('timelineTitle').addEventListener('input', function(e) {
+            updateTitleDisplay(e.target.value);
+        });
+
+        function updateTitleDisplay(title) {
+            const parts = title.split(' ');
+            if (parts.length > 1) {
+                const lastWord = parts.pop();
+                document.getElementById('displayTitle').innerHTML = 
+                    parts.join(' ') + ' <span class="highlight">' + lastWord + '</span>';
+            } else {
+                document.getElementById('displayTitle').innerHTML = 
+                    '<span class="highlight">' + title + '</span>';
+            }
+        }
+
+        function addEntry() {
+            const date = document.getElementById('entryDate').value.trim();
+            const title = document.getElementById('entryTitle').value.trim();
+            const description = document.getElementById('entryDescription').value.trim();
+            const badgeColor = document.getElementById('entryBadgeColor').value;
+
+            if (!date || !title || !description) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            const entry = { date, title, description, badgeColor };
+
+            if (editingIndex >= 0) {
+                entries[editingIndex] = entry;
+                editingIndex = -1;
+            } else {
+                entries.push(entry);
+            }
+
+            sortEntries();
+            renderTimeline();
+            clearForm();
+        }
+
+        function parseDate(dateStr) {
+            // Try to parse common date formats
+            // Handle formats like "January 15th", "Jan 15", "Q2 2024", "2024-01-15", etc.
+            
+            // Try standard date parsing first
+            let parsed = new Date(dateStr);
+            if (!isNaN(parsed.getTime())) {
+                return parsed;
+            }
+
+            // Handle month names with ordinals (January 15th)
+            const monthOrdinalMatch = dateStr.match(/(\w+)\s+(\d+)(?:st|nd|rd|th)?(?:\s*,?\s*(\d{4}))?/i);
+            if (monthOrdinalMatch) {
+                const monthStr = monthOrdinalMatch[1];
+                const day = parseInt(monthOrdinalMatch[2]);
+                const year = monthOrdinalMatch[3] || new Date().getFullYear();
+                parsed = new Date(`${monthStr} ${day}, ${year}`);
+                if (!isNaN(parsed.getTime())) {
+                    return parsed;
+                }
+            }
+
+            // Handle quarter formats (Q1 2024, Q2 2024)
+            const quarterMatch = dateStr.match(/Q(\d)\s+(\d{4})/i);
+            if (quarterMatch) {
+                const quarter = parseInt(quarterMatch[1]);
+                const year = parseInt(quarterMatch[2]);
+                const month = (quarter - 1) * 3; // Q1=0, Q2=3, Q3=6, Q4=9
+                return new Date(year, month, 1);
+            }
+
+            // Handle date ranges (Jan 24 - Feb 6)
+            const rangeMatch = dateStr.match(/(\w+)\s+(\d+)\s*-\s*(\w+)\s+(\d+)/i);
+            if (rangeMatch) {
+                const startMonth = rangeMatch[1];
+                const startDay = rangeMatch[2];
+                const year = new Date().getFullYear();
+                parsed = new Date(`${startMonth} ${startDay}, ${year}`);
+                if (!isNaN(parsed.getTime())) {
+                    return parsed;
+                }
+            }
+
+            // If all else fails, return a date far in the future so it appears last
+            return new Date(9999, 11, 31);
+        }
+
+        function sortEntries() {
+            entries.sort((a, b) => {
+                const dateA = parseDate(a.date);
+                const dateB = parseDate(b.date);
+                return dateA - dateB;
+            });
+        }
+
+        function clearForm() {
+            document.getElementById('entryDate').value = '';
+            document.getElementById('entryTitle').value = '';
+            document.getElementById('entryDescription').value = '';
+            document.getElementById('entryBadgeColor').value = 'purple';
+            editingIndex = -1;
+        }
+
+        function editEntry(index) {
+            const entry = entries[index];
+            document.getElementById('entryDate').value = entry.date;
+            document.getElementById('entryTitle').value = entry.title;
+            document.getElementById('entryDescription').value = entry.description;
+            document.getElementById('entryBadgeColor').value = entry.badgeColor;
+            editingIndex = index;
+            
+            // Scroll to form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteEntry(index) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                entries.splice(index, 1);
+                renderTimeline();
+            }
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            
+            if (entries.length === 0) {
+                container.innerHTML = `
+                    <div class="timeline-line"></div>
+                    <div class="empty-state">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h3>No entries yet</h3>
+                        <p>Add your first timeline entry above to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Helper function to convert markdown links to HTML
+            function convertMarkdownLinks(text) {
+                // Convert [link text](url) to <a href="url">link text</a>
+                return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            }
+
+            let html = '<div class="timeline-line"></div>';
+            
+            entries.forEach((entry, index) => {
+                const side = index % 2 === 0 ? 'left' : 'right';
+                // Convert markdown links in description to HTML
+                const descriptionWithLinks = convertMarkdownLinks(entry.description);
+                
+                html += `
+                    <div class="timeline-item ${side}" style="animation-delay: ${index * 0.1}s">
+                        <div class="timeline-content">
+                            <div class="entry-actions">
+                                <button class="btn btn-danger" onclick="editEntry(${index})">✏️</button>
+                                <button class="btn btn-danger" onclick="deleteEntry(${index})">🗑️</button>
+                            </div>
+                            <div class="date-badge ${entry.badgeColor}">${entry.date}</div>
+                            <h2 class="timeline-entry-title">${entry.title}</h2>
+                            <p class="timeline-entry-description">${descriptionWithLinks}</p>
+                        </div>
+                        <div class="timeline-dot"></div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function generateCompleteHTML() {
+            const title = document.getElementById('timelineTitle').value;
+            const titleHTML = document.getElementById('displayTitle').innerHTML;
+            
+            let entriesHTML = '';
+            entries.forEach((entry, index) => {
+                const side = index % 2 === 0 ? 'left' : 'right';
+                entriesHTML += `
+            <div class="timeline-item ${side}">
+                <div class="timeline-content">
+                    <div class="date-badge ${entry.badgeColor}">${entry.date}</div>
+                    <h2 class="timeline-entry-title">${entry.title}</h2>
+                    <p class="timeline-entry-description">${entry.description}</p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>`;
+            });
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        ${document.querySelector('style').textContent}
+        .entry-actions { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="timeline-preview">
+            <div class="preview-header">
+                <h2 class="timeline-title-display">${titleHTML}</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-line"></div>
+                ${entriesHTML}
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+
+        function exportHTML() {
+            const html = generateCompleteHTML();
+            
+            // Use Blob instead of data URL to avoid encoding issues
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = url;
+            downloadAnchor.download = 'timeline.html';
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function copyToClipboard() {
+            const html = generateCompleteHTML();
+            navigator.clipboard.writeText(html).then(() => {
+                alert('HTML copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+
+        function saveData() {
+            const data = {
+                title: document.getElementById('timelineTitle').value,
+                entries: entries,
+                theme: currentTheme
+            };
+            const json = JSON.stringify(data, null, 2);
+            
+            // Use Blob instead of data URL to avoid encoding issues
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = url;
+            downloadAnchor.download = 'timeline-data.json';
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportMarkdown() {
+            const title = document.getElementById('timelineTitle').value;
+            
+            let markdown = `# ${title}\n\n`;
+            markdown += `*Timeline with ${entries.length} ${entries.length === 1 ? 'entry' : 'entries'}*\n\n`;
+            markdown += '---\n\n';
+            
+            entries.forEach((entry, index) => {
+                // Add entry with emoji indicators for badge colors
+                const colorEmoji = {
+                    'red': '🔴',
+                    'purple': '🟣',
+                    'blue': '🔵',
+                    'green': '🟢'
+                };
+                
+                markdown += `## ${entry.title}\n\n`;
+                markdown += `**📅 ${entry.date}** ${colorEmoji[entry.badgeColor] || '⚪'}\n\n`;
+                markdown += `${entry.description}\n\n`;
+                
+                // Add separator between entries (but not after the last one)
+                if (index < entries.length - 1) {
+                    markdown += '---\n\n';
+                }
+            });
+            
+            // Add footer
+            markdown += '\n---\n';
+            markdown += `\n*Generated by Timeline Creator on ${new Date().toLocaleDateString()}*\n`;
+            
+            // Use Blob instead of data URL to avoid encoding issues
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = url;
+            downloadAnchor.download = 'timeline.md';
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function parseMarkdownTimeline(markdown) {
+            const lines = markdown.split('\n');
+            const data = {
+                title: 'My Timeline',
+                entries: []
+            };
+            
+            let currentEntry = null;
+            let inEntry = false;
+            
+            // Helper function to convert markdown links to HTML
+            function convertMarkdownLinks(text) {
+                // Convert [link text](url) to <a href="url">link text</a>
+                return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            }
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // Parse title (first # heading)
+                if (line.startsWith('# ') && !data.titleSet) {
+                    data.title = line.substring(2).trim();
+                    data.titleSet = true;
+                    continue;
+                }
+                
+                // Parse entry title (## heading)
+                if (line.startsWith('## ')) {
+                    // Save previous entry if exists
+                    if (currentEntry && currentEntry.title) {
+                        data.entries.push(currentEntry);
+                    }
+                    
+                    // Start new entry
+                    currentEntry = {
+                        title: line.substring(3).trim(),
+                        date: '',
+                        description: '',
+                        badgeColor: 'purple'
+                    };
+                    inEntry = true;
+                    continue;
+                }
+                
+                // Parse date and badge color (line with ** and emoji)
+                if (inEntry && line.includes('📅') && line.includes('**')) {
+                    // Extract date between ** markers
+                    const dateMatch = line.match(/\*\*📅\s*([^*]+)\*\*/);
+                    if (dateMatch) {
+                        currentEntry.date = dateMatch[1].trim();
+                    }
+                    
+                    // Extract badge color from emoji
+                    if (line.includes('🔴')) {
+                        currentEntry.badgeColor = 'red';
+                    } else if (line.includes('🟣')) {
+                        currentEntry.badgeColor = 'purple';
+                    } else if (line.includes('🔵')) {
+                        currentEntry.badgeColor = 'blue';
+                    } else if (line.includes('🟢')) {
+                        currentEntry.badgeColor = 'green';
+                    }
+                    continue;
+                }
+                
+                // Parse description (non-empty lines that aren't separators or metadata)
+                if (inEntry && line && !line.startsWith('---') && !line.startsWith('*Generated by') && !line.startsWith('*Timeline with')) {
+                    if (currentEntry.description) {
+                        currentEntry.description += ' ';
+                    }
+                    // Convert markdown links to HTML
+                    currentEntry.description += convertMarkdownLinks(line);
+                }
+                
+                // Entry separator
+                if (line === '---' && inEntry) {
+                    if (currentEntry && currentEntry.title) {
+                        data.entries.push(currentEntry);
+                        currentEntry = null;
+                        inEntry = false;
+                    }
+                }
+            }
+            
+            // Add last entry if exists
+            if (currentEntry && currentEntry.title) {
+                data.entries.push(currentEntry);
+            }
+            
+            return data;
+        }
+
+        function loadData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json,.md,.markdown';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        let data;
+                        const fileContent = event.target.result;
+                        
+                        // Check if file is JSON or Markdown
+                        if (file.name.endsWith('.json')) {
+                            // Parse as JSON
+                            data = JSON.parse(fileContent);
+                        } else if (file.name.endsWith('.md') || file.name.endsWith('.markdown')) {
+                            // Parse as Markdown
+                            data = parseMarkdownTimeline(fileContent);
+                        } else {
+                            // Try JSON first, then Markdown
+                            try {
+                                data = JSON.parse(fileContent);
+                            } catch {
+                                data = parseMarkdownTimeline(fileContent);
+                            }
+                        }
+                        
+                        document.getElementById('timelineTitle').value = data.title || 'My Timeline';
+                        updateTitleDisplay(data.title || 'My Timeline');
+                        entries = data.entries || [];
+                        
+                        // Load theme if saved (JSON only)
+                        if (data.theme) {
+                            changeTheme(data.theme);
+                        }
+                        
+                        renderTimeline();
+                        alert('Timeline data loaded successfully!');
+                    } catch (err) {
+                        alert('Error loading file: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Initialize
+        renderTimeline();
+    </script>
+</body>
+</html>
