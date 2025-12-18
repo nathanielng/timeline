@@ -2,7 +2,9 @@
 
 A beautiful, interactive web application for creating and visualizing timelines. Create chronological event timelines with rich descriptions, customizable colors, and multiple export formats - all in your browser.
 
-**Live Demo:** https://claude.ai/public/artifacts/360d6611-6e40-4de6-bddd-cfd82edc6b2c
+**Live App:** https://nathanielng.github.io/timeline/
+
+**Original Demo:** https://claude.ai/public/artifacts/360d6611-6e40-4de6-bddd-cfd82edc6b2c
 
 ## Features
 
@@ -18,7 +20,7 @@ A beautiful, interactive web application for creating and visualizing timelines.
 
 ### Using the Application
 
-1. **Open the App**: Open `src/timeline-creator.html` in your web browser, or visit the [live demo](https://claude.ai/public/artifacts/360d6611-6e40-4de6-bddd-cfd82edc6b2c)
+1. **Open the App**: Visit the [live app](https://nathanielng.github.io/timeline/) or open `src/timeline-creator.html` in your web browser
 
 2. **Set Your Timeline Title**: Enter a title for your timeline in the top input field
 
